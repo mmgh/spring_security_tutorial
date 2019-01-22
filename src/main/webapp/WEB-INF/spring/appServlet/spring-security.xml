@@ -15,7 +15,7 @@
 	<beans:bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
 
 
-	 <beans:bean id="accessDecisionManager" class="org.springframework.security.access.vote.AffirmativeBased">
+	<beans:bean id="accessDecisionManager" class="org.springframework.security.access.vote.AffirmativeBased">
 		<beans:constructor-arg>
 			<beans:list>
 				<!-- 	
@@ -100,8 +100,8 @@
 		<beans:property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<beans:property name="url"
 			value="jdbc:mysql://localhost:3306/TestDB" />
-		<beans:property name="username" value="pankaj" />
-		<beans:property name="password" value="pankaj123" />
+		<beans:property name="username" value="admin" />
+		<beans:property name="password" value="adminj123" />
 	</beans:bean>
  	-->
  	
