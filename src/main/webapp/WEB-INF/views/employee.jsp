@@ -7,7 +7,7 @@
 <body>
 	<h1>Employee Information</h1>
 	<p>
-		Employee ID:${id}<br> Employee Name:${name}<br>
+		Login ID:${id}<br> Employee Name:${name}<br>
 	</p>
 	<c:if test="${pageContext.request.userPrincipal.name != null}">
 	Hi ${pageContext.request.userPrincipal.name}<br>
