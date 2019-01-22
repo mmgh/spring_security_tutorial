@@ -21,8 +21,7 @@ public class CustomUserDetailService implements UserDetailsService{
 		
 		logger.info("loadUserByUsername username : " + username);
 		
-		
-		if(!username.equals("admin")) {
+		if( !(username.equals("admin") || username.equals("dba")) ) {
 			throw new UsernameNotFoundException(username + " not found");
 		}
 		

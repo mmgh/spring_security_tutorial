@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -36,60 +38,80 @@ public class CustomAccessDecisionVoter implements AccessDecisionVoter<Object> {
 	@Override
 	public int vote(Authentication authentication, Object object, Collection<ConfigAttribute> attributes) {
     	
-		String authName = authentication.getName();
-    	logger.info("auth name : " + authName);
+		String userId = authentication.getName();
+    	logger.info("USER ID : " + userId);
 
-    	String requestUrl = ((FilterInvocation) object).getRequestUrl();
-    	logger.info("Request URL : " + requestUrl);
+    	String requestURL = ((FilterInvocation) object).getRequestUrl();
+    	logger.info("Request URL : " + requestURL);
     	
-    	if(!requestUrl.startsWith("/secured")) {
+    	
+    	/**  Spring Security가 체크하는 URI CASE확인. **/
+    	if(!requestURL.startsWith("/secured")) {
     		return ACCESS_GRANTED;
 
     	}else{
     	
-    		String[] processing = requestUrl.split("/");
-    		String processedUrl = processing[3];
+    		/** URI패턴이 있을 경우 REGEX처리한다. */
+			String securedScrIdRegex = "\\/(scrId)\\/\\w+";
+			String[] preScrIdArr     = null;
+			String requestScrId      = "";
+			
+			
+			Pattern pattern = Pattern.compile(securedScrIdRegex);
+			Matcher matcher = pattern.matcher(requestURL);
+			
+			String mgroup = "";
+			if(matcher.find()){
+				mgroup       = matcher.group();
+				preScrIdArr  = mgroup.split("/");
+				requestScrId = preScrIdArr[2];
+			}
     		
-    		Set<String> urlSet = new HashSet<String>();
-    		
+			
+			
+			/** TO DO : DB에서 URI를 관리할경우 URI리스트를 가져오는 로직을 추가한다. **/
+    		Set<String> urlSet   = new HashSet();
+			Set<String> scrIdSet = new HashSet();
+			
+			
+			
+			
     		/** 테스트 URL 세팅 **/
-    		if(authName.equals("anonymousUser")) {
+    		if(userId.equals("anonymousUser")) {
     			
-    		}else if(authName.equals("admin")) {
-    			urlSet.add("empInfo");
+    		}else if(userId.equals("admin")) {
+    			scrIdSet.add("empInfo");
     			//urlSet.add("/secured/scrId/empInfo/emp/get/20");
-    		}else if(authName.equals("dba")) {
-
+    		}else if(userId.equals("dba")) {
+    			//scrIdSet.add("empInfo");
     		}
+    		/** 테스트 URL 세팅  끝**/
     		
     		
-    		if (urlSet.contains(processedUrl)) {
-    			logger.info("ACCESS_GRANTED");
-    			return ACCESS_GRANTED;
-    		}else {
-    			logger.info("ACCESS_DENIED");
-    			return ACCESS_DENIED;
-    		}
+    		
+    		/** ACCESS_GRANTED or ACCESS_DENIED 처리 **/
+			if(urlSet.contains(requestURL)){
+				return ACCESS_GRANTED;
+			}else{
+				
+				if(!"".equals(requestScrId) && scrIdSet.contains(requestScrId)){
+					return ACCESS_GRANTED;
+				}else{
+					return ACCESS_DENIED;
+				}
+				
+			}
+			
+			
+			
+			
     		
     	}
-		
+    	
 		
 	}
 	
 	
-	public Set urlProcessing(Set urlSet) {
-		for (Iterator<Integer> itr = urlSet.iterator(); itr.hasNext();) {
-			
-			String url = itr.next().toString();
-			String[] processing = url.split("/");
-			String processedUrl = processing[2];
-			
-			urlSet.remove(url);
-			urlSet.add(processedUrl);
-		}
-
-		return urlSet;
-	}
 
 	
 }
