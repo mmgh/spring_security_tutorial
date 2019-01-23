@@ -11,7 +11,21 @@
 	<beans:bean id="customUserDetailService" class="com.spring.app.security.service.CustomUserDetailService"/>
 	<beans:bean id="passwordEncoder"         class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
 
-	<beans:bean id="accessDecisionManager" class="org.springframework.security.access.vote.AffirmativeBased">
+	
+	<!-- 다수 표가 결정에 영향 -->
+	<!-- 
+	<beans:bean id="accessDecisionManager"   class="org.springframework.security.access.vote.ConsensusBased">
+	</beans:bean>
+	 -->
+	
+	<!-- 보터가 접근을 승인하면 이전에 거부된 내용과 상관없이 접근이 승인 -->
+	<!-- 
+	<beans:bean id="accessDecisionManager"   class="org.springframework.security.access.vote.AffirmativeBased">
+	</beans:bean>
+	 -->
+	
+	<!-- 모든 보터가 만장일치로 접근을 승인 -->
+	<beans:bean id="accessDecisionManager"   class="org.springframework.security.access.vote.UnanimousBased">
 		<beans:constructor-arg>
 			<beans:list>
 				<!-- 	
