@@ -83,6 +83,7 @@ public class CustomAccessDecisionVoter implements AccessDecisionVoter<Object> {
 
 			} else if (userId.equals("admin")) {
 				scrIdSet.add("empInfo");
+				scrIdSet.add("apiSample");
 				// urlSet.add("/secured/scrId/empInfo/emp/get/20");
 			} else if (userId.equals("dba")) {
 				// scrIdSet.add("empInfo");
@@ -114,3 +115,4 @@ public class CustomAccessDecisionVoter implements AccessDecisionVoter<Object> {
 	
 
 }
+;
